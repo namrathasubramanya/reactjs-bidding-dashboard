@@ -2,8 +2,12 @@ import React, { Component } from 'react';
 import './App.css';
 import Header from './Header'
 import Main from './Main'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faUser } from '@fortawesome/free-solid-svg-icons'
 
-class App extends Component {
+library.add(faUser)
+
+export default class App extends Component {
   render() {
     return (
     	<div>
@@ -13,5 +17,3 @@ class App extends Component {
     );
   }
 }
-
-export default App;

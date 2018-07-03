@@ -1,46 +1,60 @@
 import React from 'react';
-import {   Modal, 
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Collapse,
-  Navbar,
-  NavbarToggler,
-  NavbarBrand,
-  Nav,
-  NavItem,
-  NavLink,
-  Container,
-  Row,
-  Col,
-  Jumbotron,
-  Button } from 'reactstrap';
-import { HashRouter, Route, Switch } from "react-router-dom";
-import {  Link, LinkContainer } from "react-router-bootstrap";
-import MenuItem from 'react-bootstrap/lib/MenuItem';
-import Home from './Home';
-import Products from './Products';
-import About from './About';
-import Contact from './Contact';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-class ModalComponent extends React.Component {
+export default class ModalComponent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { modal: false,name: ''};
+    this.toggle = this.toggle.bind(this);
+    this.handleChangeName = this.handleChangeName.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  toggle() {
+    this.setState({
+      modal: !this.state.modal
+    });
+  }
+  handleChangeName(event) {
+    this.setState({name: event.target.value});
+  }
+
+  handleSubmit() {
+     var name = this.state.name;
+     localStorage.setItem('Username',name);
+     this.setState({
+      modal: !this.state.modal
+     });
+  }
+
+  handleName() {
+    this.props.onSetName(this.state.name);            
+}
+
   render() {
     return (
         <div>
-          <h1>Simple SPA</h1>
-          <ul className="header">
-            <li><NavLink exact="true" to="/">Home</NavLink></li>
-            <li><NavLink to="/products">Stuff</NavLink></li>
-            <li><NavLink to="/contact">Contact</NavLink></li>
-          </ul>
-          <div className="content">
-            <Route path="/" component={Home}/>
-            <Route path="/products" component={Products}/>
-            <Route path="/contact" component={Contact}/>
-          </div>
+        <FontAwesomeIcon onClick={this.toggle} icon="user"/>
+        <Modal isOpen={this.state.modal}>
+        <form onSubmit={this.handleSubmit}>
+          <ModalHeader>Live Bidding Registration</ModalHeader>
+          <ModalBody>
+          <div className="row">
+            <div className="form-group col-md-4">
+            <label>Name:</label>
+            <input type="text" value={this.state.name} onChange={this.handleChangeName} className="form-control" />
+              </div>
+              </div>
+          </ModalBody>
+          <ModalFooter>
+            <Button type="submit" onClick={this.handleSubmit} color="success" className="btn btn-success">Register</Button>
+            <Button color="danger" onClick={this.toggle}>Cancel</Button>
+          </ModalFooter>
+          </form>
+        </Modal>
         </div>
+      
     );
   }
 }
-
-export default ModalComponent;

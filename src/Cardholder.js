@@ -9,14 +9,9 @@ import {
   Button 
 } from 'reactstrap';
 import { Route } from 'react-router-dom';
-import Title from './Title';
 import PropTypes from 'prop-types';
-import Art1 from './Art1';
-
 
 export default class Cardholder extends PureComponent {
-
-
   render(){
     return (
       <div>
@@ -26,22 +21,17 @@ export default class Cardholder extends PureComponent {
             <CardTitle><h1>{this.props.name}</h1></CardTitle>
             <CardSubtitle>Card subtitle</CardSubtitle>
             <CardText>{this.props.description}</CardText>
-            
             <Route render={({ history}) => (
-    <Button
-      className="btn btn-info"
-      onClick={() => { history.push('/art1') }}
-    >
-      Join the event
-    </Button>
-  )} />
+              <Button className="btn btn-info" onClick={() => { history.push('/art1') }}>
+                Join the event
+              </Button>
+            )} />
           </CardBody>
         </Card>
       </div>
     );
   }
 }
-  
 
 Cardholder.propTypes = {
   name: PropTypes.string

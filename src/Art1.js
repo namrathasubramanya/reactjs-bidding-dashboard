@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
-import { Button } from 'react-bootstrap'
+import { Button, Row, Col } from 'react-bootstrap'
 import { FormControl } from 'react-bootstrap'
 import Img from 'react-image'
-import Iframe from 'react-iframe'
-import User1 from './User1'
 import image9 from './image9.jpg';
 import PubNubReact from 'pubnub-react';
+import { ListGroup, ListGroupItem } from 'reactstrap';
 
 export default class Art1 extends Component {
 	constructor(props) {
@@ -25,25 +24,61 @@ export default class Art1 extends Component {
   	}
 
   	handleSubmit(event) {
-  		this.pubnub.publish({
-                message: this.state.value,
-                channel: 'art1'
-        });
+			var startingBid = 30;
+  		var data =localStorage.getItem('Username');
+  		console.log('localStorage'+data);
+  		var message = data+" : "+this.state.value;
+			if(data != null) {
+			if(this.state.value > startingBid && this.state.value < 1000000) {
+				this.pubnub.publish({
+	                message: message,
+	                channel: 'art1'
+	        });
+			} else {
+				alert("Enter value between Starting Bid and 1000000!");
+			}
+		}else {
+			alert("Enter username!");
+		}
     	event.preventDefault();
   	}
+
+		componentWillMount() {
+         this.pubnub.subscribe({
+             channels: ['art1'],
+             withPresence: false
+         });
+         this.pubnub.getMessage('art1', (msg) => {
+         	var data = localStorage.getItem('username');
+             console.log(msg.message);
+ 						this.last_message = msg.message;
+ 						console.log('this.last_message 1'+this.last_message);
+         });
+ 				
+     }
+
 	render() {
+			const messages = this.pubnub.getMessage('art1');
 	    return (
 	    	<div>
-		    	<Img height={360} width={636} src={image9}/>
-		    	<br/>
-		    	<br/>
-		    	<form onSubmit={this.handleSubmit}>
-	        		<label>
-	          			<FormControl type="text" value={this.state.value} onChange={this.handleChange} />
-	        		</label>
-	        		<Button className="btn btn-info btn-lg" type="submit" value="Submit">Submit Bid</Button>
-	      		</form>
-      		</div>
+					<Row>
+						<Col md={6}>
+				    	<Img height={360} width={636} src={image9}/>
+				    	<br/>
+				    	<br/>
+				    	<form onSubmit={this.handleSubmit} style={{marginLeft: 10 + 'em'}}>
+									<h2> Starting bid: $30 </h2>
+			        		<label>
+			          			<FormControl type="number" pattern="[0-9]*" inputMode="numeric" value={this.state.value} onChange={this.handleChange} />
+			        		</label>
+			        		<Button className="btn btn-info btn-lg" type="submit" value="Submit" style={{marginLeft: 10 + 'px'}}>Place Bid</Button>
+			      	</form>
+						</Col>
+						<Col md={6}>
+							<ListGroup>{messages.map((m, index) => <ListGroupItem><h1 key={'message' + index}>{m.message}</h1></ListGroupItem>)}</ListGroup>
+						</Col>
+					</Row>
+      	</div>
 	    );
 	}
 }
