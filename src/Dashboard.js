@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
 import PubNubReact from 'pubnub-react';
 import { ListGroup, ListGroupItem } from 'reactstrap';
-import Cards from './views/Base/Cards/Cards'
+import Cards from './Cards'
 
 
 export default class Dashboard extends Component {
 	constructor(props) {
     	super(props);
-			this.state = {highest: 0};
+			this.state = {highest: 0, people: 0};
 			//this.last_message = 0;
     	this.pubnub = new PubNubReact({
             publishKey: 'pub-c-172db584-ca6b-4e9c-80a7-4e4d982bcf65',
@@ -31,17 +31,25 @@ export default class Dashboard extends Component {
 						highest: msg.message
 					});
 			});
-			this.pubnub.getPresence('art1', (presence) => {
-					console.log('presence'+presence);
+			this.pubnub.hereNow({
+				channels: ["art1"],
+				includeState: true
+			},(status,response)=> {
+				console.log(response.totalOccupancy);
+				this.setState ({
+					people: response.totalOccupancy
+				});
 			});
+
 		}
 
 	render() {
 		const messages = this.pubnub.getMessage('art1');
-		const presence = this.pubnub.getPresence('art1');
+		const presence = this.pubnub.hereNow('art1');
 	    return (
 	    		<div>
-						<Cards data={messages.length} highest={this.state.highest}/>
+						<Cards data={messages.length} highest={this.state.highest} people={this.state.people}/>
+
 						<br/>
 						<br/>
 							<ListGroup flush>{messages.map((m, index) => <ListGroupItem><h1 key={'message' + index}>{m.message}</h1></ListGroupItem>)}</ListGroup>
