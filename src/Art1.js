@@ -11,8 +11,8 @@ export default class Art1 extends Component {
     	super(props);
     	this.state = {value: ''};
     	this.pubnub = new PubNubReact({
-            publishKey: 'pub-c-172db584-ca6b-4e9c-80a7-4e4d982bcf65',
-            subscribeKey: 'sub-c-07e8b65a-78c9-11e8-bf64-d6949d01620d'
+            publishKey: 'ENTER_YOUR_PUBLISH_KEY',
+            subscribeKey: 'ENTER_YOUR_SUBSCRIBE_KEY'
         });
     	this.pubnub.init(this);
     	this.handleChange = this.handleChange.bind(this);
